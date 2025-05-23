@@ -1,0 +1,75 @@
+sudo amazon-linux-extras install ansiblé
+ad-hoc commands
+ansible localhost -m ping
+ansible localhost -m command -a uptime
+ansible localhst -m yum -a "name httpd state-installed" ansible localhost -m service -a "name=httpd state=started"
+Ansible localhost -m file -a "dest - /home/test/newdirectory mode=777 owner=user1 group=user state=directory"
+Playbooks
+1. Create a file with name hostname.yml
+- ﻿﻿name: Check ansible command hosts: localhost tasks:
+- ﻿﻿name: Check hostname command: hostname
+ansible-playbook localhost hostname.yml
+2. Create a playbook to install httpd and index.html file
+- ﻿﻿name: Setup a webserver hosts: localhost tasks:
+- ﻿﻿name: Ensure httpd is present yum: name-httpd state=present
+- ﻿﻿name: Create index.html file copy:• src: ~/index.html dest: /var/www/html/index.html owner: root group: root mode: 0644
+- ﻿﻿name: Ensure httpd is started service: name=httpd state=started
+
+vars:
+package:
+• 11
+Roles:
+
+
+Createa directory named roles and switch to the directory ansible-galaxy init apache
+vi roles/apache/tasks/main.yml
+- ﻿﻿name: Check hostname command: hostname
+- ﻿﻿name: Ensure httpd is present yum: nameshttpd state=present
+- ﻿﻿name: Create index.html file сору: src: ~/index.html dest: /var/www/html/index.html
+
+- owner: root group: root mode: 0644
+- ﻿﻿name: Ensure httpd is started service: name-httpd state=started
+vi apache.yml
+Handlers:
+- ﻿﻿name: Playbook to setup simple webpage using apache hosts: localhost become: true tasks:
+- ﻿﻿name: Tasks1-Install Apache apt: name=apache2 state=present
+
+
+- ﻿﻿name: Tasks2-Create index.html file and copy to /var/www/html copy: src: index.html dest: /var/www/html/index.html owner: root group: root mode: 0777 notify: Restart Apache
+handlers:
+- name: Restart Apache
+service: name=apache2 state=restarted
+
+- name: work with apache role playbook hosts: localhost user: ansible become: true
+roles:
+- role: apache
+with_items
+hosts: all
+become: true
+gather
+_facts: no
+tasks:
+- name: create users
+user:
+name: "((item)}"
+groups: test state: present
+with_items:
+- ﻿﻿user1
+- ﻿﻿user2
+
+When Condition
+vars:
+pkg: "™
+tasks:
+name: Tasks1-Install Apache apt: name="{{pkg)}" state=present
+when: pkg=="apache2"
+- ﻿﻿name: Task1-Install other pkgs apt: name="({pkg)}" state=present when: pkgl="apache2"
+- ﻿﻿name: Tasks2-Create index.html file and copy to /var/www/html copy: src: index.html dest: /var/www/html/index.html
+
+
+owner: root
+group: root mode: 0777
+notify: Restart Apache
+handlers:
+- name: Restart Apache
+service: name=apache2 state=restarted
